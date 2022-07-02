@@ -14,7 +14,7 @@
 
 **School of Labor and Employment Relations, University of Illinois at Urbana-Champaign**
 
-- Ph.D. in Human Resources, *2023 (expected)*
+- Ph.D. in Human Resources and Industrial Relations, *May 2023 (expected)*
 
 **School of Psychology and Cognitive Science, East China Normal University**
 

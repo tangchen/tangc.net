@@ -37,7 +37,7 @@ Teaching Assistant, Negotiation, School of Entrepreneurship and Management, Shan
 
 Teaching Assistant, Executive MBA Midterm Module, China Europe International Business School, Spring 2017
 
-### HONORS AND AWARDS
+### **HONORS AND AWARDS**
 - International Personnel Assessment Council James C. Johnson Student Paper Award (June 2022)
 - Tim Judge Fellowship, School of Labor and Employment Relations, UIUC (May 2022)
 - University of Illinois List of [Teachers Ranked as Excellent (Fall 2020)](https://citl.illinois.edu/citl-101/measurement-evaluation/teaching-evaluation/teaching-evaluations-(ices)/teachers-ranked-as-excellent)

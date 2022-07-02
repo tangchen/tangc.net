@@ -1,0 +1,906 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Data Leakage &#8212; Chen Tang</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "tangchen/tangc.net");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Learning Python with Keen" href="../_projects/python-with-keen/0-intro.html" />
+    <link rel="prev" title="Some Basic Linear Algebra" href="2020-01-09-basic-linear-algebra.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Chen Tang</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome!
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../cv.html">
+   Curriculum Vitae
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Blog Posts:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="2019-09-01-bias-variance-breakdown.html">
+   A Very Detailed Bias-Variance Breakdown
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="2020-01-09-basic-linear-algebra.html">
+   Some Basic Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Data Leakage
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Fun Projects:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../_projects/python-with-keen/0-intro.html">
+   Learning Python with Keen
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../_projects/python-with-keen/1-python-basics.html">
+     Session 1: Python Basics
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Notes:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../_notes/bayesian/hierarchical-model.html">
+   Hierarchical model
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/tangchen/tangc.net"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/tangchen/tangc.net/issues/new?title=Issue%20on%20page%20%2F_blog/2021-05-31-tmag2021-data-leakage.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/_blog/2021-05-31-tmag2021-data-leakage.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-is-data-leakage">
+   What is Data leakage
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-dataset">
+   Example Dataset
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-preprocessing">
+     Data Preprocessing
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#train-test-split-and-train-the-model">
+     Train-Test Split and Train the Model
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#issue-1-variable-selection">
+   Issue 1: Variable Selection
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#issue-2-domain-knowledge">
+   Issue 2: Domain Knowledge
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#issue-3-data-preprocessing">
+   Issue 3: Data Preprocessing
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#avoiding-data-leakage">
+   Avoiding Data Leakage
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Data Leakage</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-is-data-leakage">
+   What is Data leakage
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#example-dataset">
+   Example Dataset
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#data-preprocessing">
+     Data Preprocessing
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#train-test-split-and-train-the-model">
+     Train-Test Split and Train the Model
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#issue-1-variable-selection">
+   Issue 1: Variable Selection
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#issue-2-domain-knowledge">
+   Issue 2: Domain Knowledge
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#issue-3-data-preprocessing">
+   Issue 3: Data Preprocessing
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#avoiding-data-leakage">
+   Avoiding Data Leakage
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <!-- ---
+key: post20210531
+title: "Data Leakage"
+date: 2021-05-31
+categories: ["Math and Stats"]
+tags: ["Machine learning", "Prediction"]
+published: true
+--- -->
+<section class="tex2jax_ignore mathjax_ignore" id="data-leakage">
+<h1>Data Leakage<a class="headerlink" href="#data-leakage" title="Permalink to this headline">#</a></h1>
+<p><em>(This post is from a talk on data leakage at <a class="reference external" href="https://www.purdue.edu/hhs/psy/tmag/">the 2021 Technology and Measurement Around the Globe (TMAG) virtual symposium</a>. Code and data can be found <a class="reference external" href="https://github.com/tangchen/data-leakage-tmag2021">here</a>)</em></p>
+<section id="what-is-data-leakage">
+<h2>What is Data leakage<a class="headerlink" href="#what-is-data-leakage" title="Permalink to this headline">#</a></h2>
+<p>Data leakage happens when information about the outcome variable “leaks”
+into the model training process, and such information is not available
+when the trained model is later used to make predictions on new data
+(Ambroise &amp; McLachlan, 2002).</p>
+<p>For example, data analysts may want use images (shown below) to predict
+whether a mole/melanoma is malignant or benign. Notice that one issue in
+these images is that a ruler is shown in the malignant image. If
+majority of the malignant images has a ruler, then the presence of a
+ruler will leak information about the outcome (malignant or benign) into
+the model training process: a ruler was shown because it was already
+diagnosed as malignant, and doctors probably wanted to track the size of
+the melanoma.</p>
+<p><img alt="" src="https://raw.githubusercontent.com/tangchen/data-leakage-tmag2021/main/melanoma.jpg" /></p>
+<p>When a model trained on such image data is used in real applications (,
+where there will be no rulers, because diagnosis has not been done), the
+model will become inaccurate. Therefore, data leakage may lead to bad
+model performance on new data and hinder model generalizability. In this
+example, one solution is to crop the images and only include information
+about the melanoma. Similarly, there are possibilities for data leakage
+in organizational research. Let’s look at some examples and discuss how
+to avoid this issue.</p>
+</section>
+<section id="example-dataset">
+<h2>Example Dataset<a class="headerlink" href="#example-dataset" title="Permalink to this headline">#</a></h2>
+<p>We will use an example dataset to demonstrate some common data leakage
+issues. Note that the dataset is simulated, it’s not real data.</p>
+<p>Assuming that we are interested in predicting employee turnover, and we
+have decided to train a model based on this dataset. Turnover is a
+binary variable (Y = yes, the employee has left; N = no, the employee
+hasn’t left). The predictors include the year the employee was hired
+(“year_hired”), age, gender, education, tenure in the organization
+(“tenure”), job satisfaction (“jobsat”), performance (“perf”), and
+salary. There are 200 observations in this dataset, the first ten rows
+are shown below:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">library</span><span class="p">(</span><span class="n">caret</span><span class="p">)</span>
+
+<span class="n">SEED</span> <span class="o">&lt;-</span> <span class="m">8424</span> <span class="c1"># this random seed was for replicating the results</span>
+
+<span class="n">dt</span> <span class="o">&lt;-</span> <span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;toydata.csv&quot;</span><span class="p">)</span>
+<span class="nf">head</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>##    year_hired age gender edu tenure jobsat perf salary turnover
+## 1        2012  36      2   3      4   3.86 1.93     NA        Y
+## 2        2017  NA      2   3      4   5.00   NA   5000        N
+## 3        2016  40      2   4      5   2.07   NA   6800        N
+## 4        2015  NA      1   3      6   3.34 2.84  10000        N
+## 5        2017  22      1   3      4     NA 5.00   5000        N
+## 6        2017  24      2   3      4   3.81 4.87   5000        N
+## 7        2015  NA      2   3      6   1.90 4.39  10000        N
+## 8        2002  57      2   3      3     NA 2.21     NA        Y
+## 9        2012  33      1   3      4   1.00   NA     NA        Y
+## 10       2019  25      2   2      2   3.17 3.77   5500        N
+</pre></div>
+</div>
+<section id="data-preprocessing">
+<h3>Data Preprocessing<a class="headerlink" href="#data-preprocessing" title="Permalink to this headline">#</a></h3>
+<p>There are missing data in this dataset. For simplicity, let’s use mean
+imputation.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">dt</span><span class="o">$</span><span class="n">age</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt</span><span class="o">$</span><span class="n">age</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt</span><span class="o">$</span><span class="n">age</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">dt</span><span class="o">$</span><span class="n">jobsat</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt</span><span class="o">$</span><span class="n">jobsat</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt</span><span class="o">$</span><span class="n">jobsat</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">dt</span><span class="o">$</span><span class="n">perf</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt</span><span class="o">$</span><span class="n">perf</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt</span><span class="o">$</span><span class="n">perf</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">dt</span><span class="o">$</span><span class="n">salary</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt</span><span class="o">$</span><span class="n">salary</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt</span><span class="o">$</span><span class="n">salary</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="nf">head</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>##    year_hired      age gender edu tenure   jobsat     perf salary turnover
+## 1        2012 36.00000      2   3      4 3.860000 1.930000   6850        Y
+## 2        2017 35.96815      2   3      4 5.000000 3.389545   5000        N
+## 3        2016 40.00000      2   4      5 2.070000 3.389545   6800        N
+## 4        2015 35.96815      1   3      6 3.340000 2.840000  10000        N
+## 5        2017 22.00000      1   3      4 2.955568 5.000000   5000        N
+## 6        2017 24.00000      2   3      4 3.810000 4.870000   5000        N
+## 7        2015 35.96815      2   3      6 1.900000 4.390000  10000        N
+## 8        2002 57.00000      2   3      3 2.955568 2.210000   6850        Y
+## 9        2012 33.00000      1   3      4 1.000000 3.389545   6850        Y
+## 10       2019 25.00000      2   2      2 3.170000 3.770000   5500        N
+</pre></div>
+</div>
+</section>
+<section id="train-test-split-and-train-the-model">
+<h3>Train-Test Split and Train the Model<a class="headerlink" href="#train-test-split-and-train-the-model" title="Permalink to this headline">#</a></h3>
+<p>Now let’s set aside a test set for evaluating model performance on new
+data, and train the model on the remaining training data. We are using
+the elastic net algorithm and random parameter search via 10-fold
+cross-validation.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">set.seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+
+<span class="c1"># train-test split, use a random 70% of the data for training</span>
+<span class="n">idx</span> <span class="o">&lt;-</span> <span class="nf">sample</span><span class="p">(</span><span class="m">1</span><span class="o">:</span><span class="nf">nrow</span><span class="p">(</span><span class="n">dt</span><span class="p">),</span> <span class="nf">floor</span><span class="p">(</span><span class="nf">nrow</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span> <span class="o">*</span> <span class="m">0.70</span><span class="p">))</span>
+<span class="n">dt_train</span> <span class="o">&lt;-</span> <span class="n">dt</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">dt_test</span> <span class="o">&lt;-</span> <span class="n">dt</span><span class="p">[</span><span class="o">-</span><span class="n">idx</span><span class="p">,</span> <span class="p">]</span>
+
+<span class="c1"># specify the predictors</span>
+<span class="n">predictors</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;year_hired&quot;</span><span class="p">,</span> <span class="s">&quot;age&quot;</span><span class="p">,</span> <span class="s">&quot;gender&quot;</span><span class="p">,</span> <span class="s">&quot;edu&quot;</span><span class="p">,</span>
+                <span class="s">&quot;tenure&quot;</span><span class="p">,</span> <span class="s">&quot;jobsat&quot;</span><span class="p">,</span> <span class="s">&quot;perf&quot;</span><span class="p">,</span> <span class="s">&quot;salary&quot;</span><span class="p">)</span>
+
+<span class="c1"># train the model</span>
+<span class="n">control</span> <span class="o">&lt;-</span> <span class="nf">trainControl</span><span class="p">(</span><span class="n">method</span> <span class="o">=</span> <span class="s">&quot;cv&quot;</span><span class="p">,</span>
+                        <span class="n">number</span> <span class="o">=</span> <span class="m">10</span><span class="p">,</span>
+                        <span class="n">search</span> <span class="o">=</span> <span class="s">&quot;random&quot;</span><span class="p">,</span>
+                        <span class="n">verboseIter</span> <span class="o">=</span> <span class="kc">FALSE</span><span class="p">)</span>
+
+<span class="n">fit1</span> <span class="o">&lt;-</span> <span class="nf">train</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dt_train</span><span class="p">[,</span> <span class="n">predictors</span><span class="p">],</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">dt_train</span><span class="p">[,</span> <span class="s">&quot;turnover&quot;</span><span class="p">],</span>
+                <span class="n">metric</span> <span class="o">=</span> <span class="s">&quot;Accuracy&quot;</span><span class="p">,</span>
+                <span class="n">method</span> <span class="o">=</span> <span class="s">&quot;glmnet&quot;</span><span class="p">,</span>
+                <span class="n">trControl</span> <span class="o">=</span> <span class="n">control</span><span class="p">,</span>
+                <span class="n">tuneLength</span> <span class="o">=</span> <span class="m">30</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Let’s check the prediction accuracy in the test set:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="n">yhat</span> <span class="o">&lt;-</span> <span class="nf">predict</span><span class="p">(</span><span class="n">fit1</span><span class="p">,</span> <span class="n">dt_test</span><span class="p">[,</span> <span class="n">predictors</span><span class="p">])</span>
+
+<span class="nf">sum</span><span class="p">(</span><span class="n">yhat</span> <span class="o">==</span> <span class="n">dt_test</span><span class="p">[,</span> <span class="s">&quot;turnover&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nf">nrow</span><span class="p">(</span><span class="n">dt_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## [1] 1
+</pre></div>
+</div>
+<p>It looks like we achieved 100% accuracy. Such a result is almost
+impossible, and it probably suggests some data leakage issues.</p>
+</section>
+</section>
+<section id="issue-1-variable-selection">
+<h2>Issue 1: Variable Selection<a class="headerlink" href="#issue-1-variable-selection" title="Permalink to this headline">#</a></h2>
+<p>Let’s check the data again.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">head</span><span class="p">(</span><span class="n">dt</span><span class="p">,</span> <span class="m">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>##    year_hired      age gender edu tenure   jobsat     perf salary turnover
+## 1        2012 36.00000      2   3      4 3.860000 1.930000   6850        Y
+## 2        2017 35.96815      2   3      4 5.000000 3.389545   5000        N
+## 3        2016 40.00000      2   4      5 2.070000 3.389545   6800        N
+## 4        2015 35.96815      1   3      6 3.340000 2.840000  10000        N
+## 5        2017 22.00000      1   3      4 2.955568 5.000000   5000        N
+## 6        2017 24.00000      2   3      4 3.810000 4.870000   5000        N
+## 7        2015 35.96815      2   3      6 1.900000 4.390000  10000        N
+## 8        2002 57.00000      2   3      3 2.955568 2.210000   6850        Y
+## 9        2012 33.00000      1   3      4 1.000000 3.389545   6850        Y
+## 10       2019 25.00000      2   2      2 3.170000 3.770000   5500        N
+</pre></div>
+</div>
+<p>Notice that in the data, the variable “salary” has an interesting
+pattern: salary is missing (imputed by the mean salary, $6,850) for
+employees who have left the organization. This makes sense because if an
+employee has left, we do not need to pay a salary anymore. But this
+directly implies that the employee has left, and the algorithm will be
+able to capture this relationship (salary = 6,850 -&gt; turnover = “Y”,
+otherwise -&gt; turnover = “N”). However, the goal of the model is to
+predict turnover, so we will not be able to observe such a pattern in
+“salary” when the model is used on future data. Therefore, we should not
+include this variable. If we want to use salary as a predictor, we
+should obtain salary information that does not indicate turnover, such
+as starting salary, annual salary, last paid salary, etc.</p>
+<p>Let’s remove the salary column and train the model again.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># remove the salary variable</span>
+<span class="n">predictors</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;year_hired&quot;</span><span class="p">,</span> <span class="s">&quot;age&quot;</span><span class="p">,</span> <span class="s">&quot;gender&quot;</span><span class="p">,</span> <span class="s">&quot;edu&quot;</span><span class="p">,</span>
+                <span class="s">&quot;tenure&quot;</span><span class="p">,</span> <span class="s">&quot;jobsat&quot;</span><span class="p">,</span> <span class="s">&quot;perf&quot;</span><span class="p">)</span>
+
+<span class="c1"># fit the model again</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+<span class="n">fit2</span> <span class="o">&lt;-</span> <span class="nf">train</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dt_train</span><span class="p">[,</span> <span class="n">predictors</span><span class="p">],</span>
+                <span class="n">y</span> <span class="o">=</span> <span class="n">dt_train</span><span class="p">[,</span> <span class="s">&quot;turnover&quot;</span><span class="p">],</span>
+                <span class="n">metric</span> <span class="o">=</span> <span class="s">&quot;Accuracy&quot;</span><span class="p">,</span>
+                <span class="n">method</span> <span class="o">=</span> <span class="s">&quot;glmnet&quot;</span><span class="p">,</span>
+                <span class="n">trControl</span> <span class="o">=</span> <span class="n">control</span><span class="p">,</span>
+                <span class="n">tuneLength</span> <span class="o">=</span> <span class="m">30</span><span class="p">)</span>
+
+<span class="c1"># check prediction results</span>
+<span class="n">yhat</span> <span class="o">&lt;-</span> <span class="nf">predict</span><span class="p">(</span><span class="n">fit2</span><span class="p">,</span> <span class="n">dt_test</span><span class="p">[,</span> <span class="n">predictors</span><span class="p">])</span>
+<span class="nf">sum</span><span class="p">(</span><span class="n">yhat</span> <span class="o">==</span> <span class="n">dt_test</span><span class="p">[,</span> <span class="s">&quot;turnover&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nf">nrow</span><span class="p">(</span><span class="n">dt_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## [1] 1
+</pre></div>
+</div>
+<p>We have removed the salary variable, but our model still achieved
+perfect accuracy. Let’s take a closer look.</p>
+</section>
+<section id="issue-2-domain-knowledge">
+<h2>Issue 2: Domain Knowledge<a class="headerlink" href="#issue-2-domain-knowledge" title="Permalink to this headline">#</a></h2>
+<p>The second issue requires the data analyst to have relevant knowledge
+about the data and task. In this example, “year_hired” and “tenure”
+together leaked information about turnover into model training.</p>
+<p>Notice that:</p>
+<ul class="simple">
+<li><p>For employees who stayed in the organization, year_hired + tenure =
+current year</p></li>
+<li><p>For employees who have left, year_hired + tenure &lt; current year</p></li>
+</ul>
+<p>In reality, this may be due to the data management workflow. For
+example, one database stores data about recruitment and hiring, and
+another database stores data regarding performance management. When the
+analyst merges data, he/she may include “year_hired” from the
+recruitment and hiring database, and “tenure” from the performance
+management database. To identify and avoid such kind of data leakage
+issues, the analyst should have specific knowledge about the problem.</p>
+<p>To deal with this issue, let’s remove “year_hired”. After removing
+“year_hired”, the prediction accuracy is 80%.</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="nf">set.seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+
+<span class="c1"># remove year_hired</span>
+<span class="n">predictors</span> <span class="o">&lt;-</span> <span class="nf">c</span><span class="p">(</span><span class="s">&quot;age&quot;</span><span class="p">,</span> <span class="s">&quot;gender&quot;</span><span class="p">,</span> <span class="s">&quot;edu&quot;</span><span class="p">,</span>
+                <span class="s">&quot;tenure&quot;</span><span class="p">,</span> <span class="s">&quot;jobsat&quot;</span><span class="p">,</span> <span class="s">&quot;perf&quot;</span><span class="p">)</span>
+
+<span class="c1"># fit the model again</span>
+<span class="n">fit3</span> <span class="o">&lt;-</span> <span class="nf">train</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dt_train</span><span class="p">[,</span> <span class="n">predictors</span><span class="p">],</span>
+              <span class="n">y</span> <span class="o">=</span> <span class="n">dt_train</span><span class="p">[,</span> <span class="s">&quot;turnover&quot;</span><span class="p">],</span>
+              <span class="n">metric</span> <span class="o">=</span> <span class="s">&quot;Accuracy&quot;</span><span class="p">,</span>
+              <span class="n">method</span> <span class="o">=</span> <span class="s">&quot;glmnet&quot;</span><span class="p">,</span>
+              <span class="n">trControl</span> <span class="o">=</span> <span class="n">control</span><span class="p">,</span>
+              <span class="n">tuneLength</span> <span class="o">=</span> <span class="m">30</span><span class="p">)</span>
+
+<span class="c1"># check prediction results</span>
+<span class="n">yhat</span> <span class="o">&lt;-</span> <span class="nf">predict</span><span class="p">(</span><span class="n">fit3</span><span class="p">,</span> <span class="n">dt_test</span><span class="p">[,</span> <span class="n">predictors</span><span class="p">])</span>
+<span class="nf">sum</span><span class="p">(</span><span class="n">yhat</span> <span class="o">==</span> <span class="n">dt_test</span><span class="p">[,</span> <span class="s">&quot;turnover&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nf">nrow</span><span class="p">(</span><span class="n">dt_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## [1] 0.8
+</pre></div>
+</div>
+</section>
+<section id="issue-3-data-preprocessing">
+<h2>Issue 3: Data Preprocessing<a class="headerlink" href="#issue-3-data-preprocessing" title="Permalink to this headline">#</a></h2>
+<p>So far we have looked at two examples of column-wise leakage, or leaking
+features. There is also another form of leakage called row-wise leakage,
+or leakage in training data (Kaufman et al., 2012).</p>
+<p>Recall that we imputed missing data using the means of the whole sample
+(which contained both thr training and test set). But this is not
+possible because we in reality we only have the training set. To prevent
+data leakage, we have to pretend that we don’t have access to the test
+set. Imputing missing data using the whole sample will expose the model
+to some information about the test data.</p>
+<p>Therefore, missing data imputation should only happen within the
+training set. Operationally, we should do train-test split first, then
+impute missing data (also see a note at the end).</p>
+<p>Let’s fix this issue:</p>
+<div class="highlight-r notranslate"><div class="highlight"><pre><span></span><span class="c1"># reload data</span>
+<span class="n">dt</span> <span class="o">&lt;-</span> <span class="nf">read.csv</span><span class="p">(</span><span class="s">&quot;toydata.csv&quot;</span><span class="p">)</span>
+
+<span class="c1"># train-test split first</span>
+<span class="n">dt_train</span> <span class="o">&lt;-</span> <span class="n">dt</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">dt_test</span> <span class="o">&lt;-</span> <span class="n">dt</span><span class="p">[</span><span class="o">-</span><span class="n">idx</span><span class="p">,</span> <span class="p">]</span>
+
+<span class="c1"># impute missing data in the training set</span>
+<span class="n">dt_train</span><span class="o">$</span><span class="n">age</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt_train</span><span class="o">$</span><span class="n">age</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt_train</span><span class="o">$</span><span class="n">age</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">dt_train</span><span class="o">$</span><span class="n">jobsat</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt_train</span><span class="o">$</span><span class="n">jobsat</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt_train</span><span class="o">$</span><span class="n">jobsat</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">dt_train</span><span class="o">$</span><span class="n">perf</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt_train</span><span class="o">$</span><span class="n">perf</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt_train</span><span class="o">$</span><span class="n">perf</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+
+<span class="c1"># do the same to test set</span>
+<span class="n">dt_test</span><span class="o">$</span><span class="n">age</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt_test</span><span class="o">$</span><span class="n">age</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt_train</span><span class="o">$</span><span class="n">age</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">dt_test</span><span class="o">$</span><span class="n">jobsat</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt_test</span><span class="o">$</span><span class="n">jobsat</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt_train</span><span class="o">$</span><span class="n">jobsat</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="n">dt_test</span><span class="o">$</span><span class="n">perf</span><span class="p">[</span><span class="nf">is.na</span><span class="p">(</span><span class="n">dt_test</span><span class="o">$</span><span class="n">perf</span><span class="p">)]</span> <span class="o">&lt;-</span> <span class="nf">mean</span><span class="p">(</span><span class="n">dt_train</span><span class="o">$</span><span class="n">perf</span><span class="p">,</span> <span class="n">na.rm</span> <span class="o">=</span> <span class="kc">TRUE</span><span class="p">)</span>
+<span class="c1"># notice that we used means of the training set to impute missing data in the test set</span>
+
+<span class="c1"># fit the model again</span>
+<span class="nf">set.seed</span><span class="p">(</span><span class="n">SEED</span><span class="p">)</span>
+
+<span class="n">fit4</span> <span class="o">&lt;-</span> <span class="nf">train</span><span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="n">dt_train</span><span class="p">[,</span> <span class="n">predictors</span><span class="p">],</span>
+              <span class="n">y</span> <span class="o">=</span> <span class="n">dt_train</span><span class="p">[,</span> <span class="s">&quot;turnover&quot;</span><span class="p">],</span>
+              <span class="n">metric</span> <span class="o">=</span> <span class="s">&quot;Accuracy&quot;</span><span class="p">,</span>
+              <span class="n">method</span> <span class="o">=</span> <span class="s">&quot;glmnet&quot;</span><span class="p">,</span>
+              <span class="n">trControl</span> <span class="o">=</span> <span class="n">control</span><span class="p">,</span>
+              <span class="n">tuneLength</span> <span class="o">=</span> <span class="m">30</span><span class="p">)</span>
+
+<span class="c1"># check prediction results</span>
+<span class="n">yhat</span> <span class="o">&lt;-</span> <span class="nf">predict</span><span class="p">(</span><span class="n">fit4</span><span class="p">,</span> <span class="n">dt_test</span><span class="p">[,</span> <span class="n">predictors</span><span class="p">])</span>
+<span class="nf">sum</span><span class="p">(</span><span class="n">yhat</span> <span class="o">==</span> <span class="n">dt_test</span><span class="p">[,</span> <span class="s">&quot;turnover&quot;</span><span class="p">])</span> <span class="o">/</span> <span class="nf">nrow</span><span class="p">(</span><span class="n">dt_test</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>## [1] 0.7
+</pre></div>
+</div>
+</section>
+<section id="avoiding-data-leakage">
+<h2>Avoiding Data Leakage<a class="headerlink" href="#avoiding-data-leakage" title="Permalink to this headline">#</a></h2>
+<p>From the above example, we can see how data leakage can cause the model
+to perform unrealistically well in the available data. Such good model
+performance is almost certainly not going to happen in real
+applications. Thus, detecting and avoiding data leakage is crucial.</p>
+<p>First of all, while a prediction accuracy of 100% often means leakage
+(especially column-wise leakage, as in two of our examples), we cannot
+rely on a 100% prediction accuracy to detect data leakage. In our
+example, “year_hired” and “tenure” together determined turnover, but in
+real-world datasets, there might be missing data issues or errors when
+inputting data, making prediction accuracy not perfectly 100%, even when
+data leakage is present.</p>
+<p>There are two steps we can take to avoid column-wise leakage:</p>
+<ul class="simple">
+<li><p>Carefully select predictors, avoid predictors that imply the
+outcome. Exploratory data analysis often helps. For example, if a
+variable is highly correlated (e.g., correlation is close to 1) with
+the outcome, then a more careful inspection of the nature of the
+variable is probably needed.</p></li>
+<li><p>Acquire domain-specific knowledge about the problem. This is highly
+context-dependent and there is not a standard solution. In our
+example, the analyst should be sensitive of potential relationships
+in the data stored in different databases, and work closely with
+coworkers who are in charge of collecting and managing employee
+data. Also, the analyst should have relevant knowledge about
+organizational tenure to avoid issues such as “year_hired” +
+“tenure” =&gt; “turnover”.</p></li>
+</ul>
+<p>To avoid row-wise leakage, a healthy model training pipeline is very
+beneficial. In our example, we should do train-test split first, and set
+the test data aside. After this, we preprocess training data, use
+training data to process the test data, and never use any information
+from the test data. A pipeline can get very complicated. Popular machine
+learning packages (e.g., “tidymodels” and “caret” in R, “scikit-learn”
+in Python) have tools to build up pipelines.</p>
+<p><em>Note. The data preprocessing procedure (i.e., train-test split first,
+then impute missing data in the training set only) was in fact not ideal
+and for demonstration purposes only. One should incorporate data
+preprocessing into the cross-validation process, and it can be treated
+as a part of the model parameter as well. For example, a model training
+pipeline can be established so that it searches the best missing data
+imputation strategy based on cross-validation.</em></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./_blog"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="2020-01-09-basic-linear-algebra.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Some Basic Linear Algebra</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="../_projects/python-with-keen/0-intro.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Learning Python with Keen</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Chen Tang<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

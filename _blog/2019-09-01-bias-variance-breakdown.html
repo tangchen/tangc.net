@@ -1,0 +1,615 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>A Very Detailed Bias-Variance Breakdown &#8212; Chen Tang</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "tangchen/tangc.net");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Some Basic Linear Algebra" href="2020-01-09-basic-linear-algebra.html" />
+    <link rel="prev" title="Curriculum Vitae" href="../cv.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Chen Tang</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome!
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../cv.html">
+   Curriculum Vitae
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Blog Posts:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   A Very Detailed Bias-Variance Breakdown
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="2020-01-09-basic-linear-algebra.html">
+   Some Basic Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="2021-05-31-tmag2021-data-leakage.html">
+   Data Leakage
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Fun Projects:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../_projects/python-with-keen/0-intro.html">
+   Learning Python with Keen
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../_projects/python-with-keen/1-python-basics.html">
+     Session 1: Python Basics
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Notes:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../_notes/bayesian/hierarchical-model.html">
+   Hierarchical model
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/tangchen/tangc.net"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/tangchen/tangc.net/issues/new?title=Issue%20on%20page%20%2F_blog/2019-09-01-bias-variance-breakdown.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/_blog/2019-09-01-bias-variance-breakdown.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-is-being-broken-down">
+   What is being broken down?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#breaking-it-down">
+   Breaking it down
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#naming-things">
+   Naming things
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reference">
+   Reference
+  </a>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>A Very Detailed Bias-Variance Breakdown</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#what-is-being-broken-down">
+   What is being broken down?
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#breaking-it-down">
+   Breaking it down
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#naming-things">
+   Naming things
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#reference">
+   Reference
+  </a>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="a-very-detailed-bias-variance-breakdown">
+<h1>A Very Detailed Bias-Variance Breakdown<a class="headerlink" href="#a-very-detailed-bias-variance-breakdown" title="Permalink to this headline">#</a></h1>
+<p>Although the concept of bias-variance trade-off is often discussed in machine learning textbooks, e.g., Bishop (2006), Hastie, Tibshirani, and Friedman (2009), James et al. (2013), I also find it important in almost any occasions in which we need to fit a statistical model on a data set with a limited number of observations. To better understand the trade-off, we should be clear about the bias-variance decomposition. I prefer to call it bias-variance breakdown cause there are fewer syllables. This post is an attempt to go through the breakdown in a very detailed manner, mainly for my future reference. It may not be 100% correct because I’m very new to this topic. I will make changes if there is anything wrong.</p>
+<section id="what-is-being-broken-down">
+<h2>What is being broken down?<a class="headerlink" href="#what-is-being-broken-down" title="Permalink to this headline">#</a></h2>
+<p>First off, the bias-variance concept lives in theory. In practice, we have no way to separate bias and variance. What we could observe is just the sum of them, as well as something called “irreducible error”. We will cover that later in this post.</p>
+<p>Since we are talking about theory, let’s make up the thing that needs to be broken down. Let’s assume that we are interested in studying the relationship between <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>. Suppose the relationship is:
+$<span class="math notranslate nohighlight">\(Y = f(X) + \epsilon\)</span>$,</p>
+<p>where <span class="math notranslate nohighlight">\(\epsilon\)</span> is i.i.d. <span class="math notranslate nohighlight">\(E(\epsilon) = 0\)</span> and <span class="math notranslate nohighlight">\(\text{Var}(\epsilon) = \sigma^2\)</span>.</p>
+<p>Then we obtain a data set, <span class="math notranslate nohighlight">\(D\)</span>, that has <span class="math notranslate nohighlight">\(x_i\)</span> and <span class="math notranslate nohighlight">\(y_i\)</span> (<span class="math notranslate nohighlight">\(D = [x_i, y_i]\)</span>). Note that in the data set, <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span> are lowercase and have subscripts. This is because we are referring to observed data of <span class="math notranslate nohighlight">\(X\)</span> and <span class="math notranslate nohighlight">\(Y\)</span>.</p>
+<p>As usual, we fit a model to <span class="math notranslate nohighlight">\(D\)</span> and obtain the model <span class="math notranslate nohighlight">\(\hat{f}(x_i)\)</span>. There is a “hat” on <span class="math notranslate nohighlight">\(f(x_i)\)</span> because we are estimating the true model, <span class="math notranslate nohighlight">\(f()\)</span>. After getting <span class="math notranslate nohighlight">\(\hat{f}()\)</span>, we are interested in how this model would perform in the future. So we have to come up with a way to measure the performance of the model when applied to new data. The most common way to measure the predictive performance of a model is mean squared error (MSE) on a new data set <span class="math notranslate nohighlight">\([x^\ast, y^\ast],\)</span> or theoretically, the expected squared error:</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - \hat{f}(x^\ast))^2]\]</div>
+<p>This is the thing to be broken down.</p>
+</section>
+<section id="breaking-it-down">
+<h2>Breaking it down<a class="headerlink" href="#breaking-it-down" title="Permalink to this headline">#</a></h2>
+<p>Before we go further, we need to make sure we are clear about which is which. Since this is an expected value, there must be random variables in this equation. What is random here? First, let’s take a look at <span class="math notranslate nohighlight">\(\hat{f}(x^\ast)\)</span>.</p>
+<p>We know that <span class="math notranslate nohighlight">\(\hat{f}()\)</span> comes from <span class="math notranslate nohighlight">\(D\)</span>, and <span class="math notranslate nohighlight">\(D\)</span> contains <span class="math notranslate nohighlight">\(\epsilon\)</span>, because the true model we assumed is <span class="math notranslate nohighlight">\(Y = f(X) + \epsilon\)</span>. So <span class="math notranslate nohighlight">\(\hat{f}()\)</span> also contains <span class="math notranslate nohighlight">\(\epsilon\)</span> and hence it is a random variable. Second, what about <span class="math notranslate nohighlight">\(y^\ast\)</span>? Since <span class="math notranslate nohighlight">\([x^\ast, y^\ast]\)</span> is a sample from the true model, it again contains <span class="math notranslate nohighlight">\(\epsilon\)</span>, therefore <span class="math notranslate nohighlight">\(y^\ast\)</span> is also a random variable.</p>
+<p>Let’s now play a mathematical trick:</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - \hat{f}(x^\ast))^2] = E[(y^\ast - f(x^\ast) + f(x^\ast) - \hat{f}(x^\ast))^2]\]</div>
+<p>Here we just add and subtract <span class="math notranslate nohighlight">\(f(x^\ast)\)</span>, nothing is changed. Let <span class="math notranslate nohighlight">\(A = y^\ast - f(x^\ast)\)</span> and <span class="math notranslate nohighlight">\(B = f(x^\ast) - \hat{f}(x^\ast)\)</span>. Then the above equation becomes:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{aligned}
+E[(A + B)^2] &amp;= E[A^2 + B^2 + 2AB] \\
+&amp;= E[A^2] + E[B^2] + 2E[AB]
+\end{aligned}\end{split}\]</div>
+<p>Let’s put <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> back</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - f(x^\ast))^2] + E[(f(x^\ast) - \hat{f}(x^\ast))^2] + 2E\{[y^\ast - f(x^\ast)][f(x^\ast) - \hat{f}(x^\ast)]\}\]</div>
+<p>This is very complicated, especially the long thing on the right. Let’s first expand it:
+$<span class="math notranslate nohighlight">\(2\{E[y^\ast f(x^\ast)] - E[y^\ast \hat{f}(x^\ast)] - E[f(x^\ast) f(x^\ast)] + E[f(x^\ast) \hat{f}(x^\ast)]\}\)</span>$</p>
+<p>According to our theoretical model, we know that <span class="math notranslate nohighlight">\(y^\ast = f(x^\ast) + \epsilon\)</span>, so</p>
+<div class="math notranslate nohighlight">
+\[2\{E[(f(x^\ast) + \epsilon) f(x^\ast)] - E[(f(x^\ast) + \epsilon) \hat{f}(x^\ast)] - E[f(x^\ast) f(x^\ast)] + E[f(x^\ast) \hat{f}(x^\ast)]\}\]</div>
+<div class="math notranslate nohighlight">
+\[2\{[f(x^\ast)]^2 - E[f(x^\ast) \hat{f}(x^\ast) + \epsilon \hat{f}(x^\ast)] - [f(x^\ast)]^2 + E[f(x^\ast) \hat{f}(x^\ast)]\}\]</div>
+<div class="math notranslate nohighlight">
+\[2\{[f(x^\ast)]^2 - E[f(x^\ast) \hat{f}(x^\ast)] + E[\epsilon \hat{f}(x^\ast)] - [f(x^\ast)]^2 + E[f(x^\ast) \hat{f}(x^\ast)]\}\]</div>
+<p>Four terms cancel out, the term <span class="math notranslate nohighlight">\(E[\epsilon \hat{f}(x^\ast)] = 0\)</span>, because <span class="math notranslate nohighlight">\(\epsilon\)</span> and <span class="math notranslate nohighlight">\(\hat{f}(x^\ast)\)</span> are independent. Therefore <span class="math notranslate nohighlight">\(E[\epsilon \hat{f}(x^\ast)] = E[\epsilon] \times E[\hat{f}(x^\ast)] = 0\)</span>.</p>
+<p>OK. That long thing becomes zero and we are left with</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - f(x^\ast))^2] + E[(f(x^\ast) - \hat{f}(x^\ast))^2]\]</div>
+<p>Now let’s play a similar trick on the second term, the first term remains unchanged.</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - f(x^\ast))^2] + E\{[f(x^\ast) - E[\hat{f}(x^\ast)] + E[\hat{f}(x^\ast)] - \hat{f}(x^\ast)]^2\}\]</div>
+<p>Again let <span class="math notranslate nohighlight">\(A = f(x^\ast) - E[\hat{f}(x^\ast)]\)</span> and <span class="math notranslate nohighlight">\(B = E[\hat{f}(x^\ast)] - \hat{f}(x^\ast)\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - f(x^\ast))^2] + E[(A + B)^2]\]</div>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - f(x^\ast))^2] + E[A^2] + E[B^2] + 2E[AB]\]</div>
+<p>Plug in <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - f(x^\ast))^2] + E\{[f(x^\ast) - E[\hat{f}(x^\ast)]]^2\} + E\{[E[\hat{f}(x^\ast)] - \hat{f}(x^\ast)]^2\}\]</div>
+<div class="math notranslate nohighlight">
+\[ + 2E\{[f(x^\ast) - E[\hat{f}(x^\ast)]][E[\hat{f}(x^\ast)] - \hat{f}(x^\ast)]\}\]</div>
+<p>Let’s again look at the most annoying thing on the second row. We notice that (1) <span class="math notranslate nohighlight">\(f(x^\ast) - E[\hat{f}(x^\ast)]\)</span> is a constant, and (2) the expected value of <span class="math notranslate nohighlight">\(E[\hat{f}(x^\ast)] - \hat{f}(x^\ast)]\)</span> is just <span class="math notranslate nohighlight">\(E\{E[\hat{f}(x^\ast)]\} - E[\hat{f}(x^\ast)]\)</span>. This equals <span class="math notranslate nohighlight">\(E[\hat{f}(x^\ast)] - E[\hat{f}(x^\ast)] = 0\)</span>.</p>
+<p>So we are left with</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - f(x^\ast))^2] + E\{[f(x^\ast) - E[\hat{f}(x^\ast)]]^2\} + E\{[E[\hat{f}(x^\ast)] - \hat{f}(x^\ast)]^2\}\]</div>
+<p>We also notice that, in the second term, both <span class="math notranslate nohighlight">\(f(x^\ast)\)</span> and <span class="math notranslate nohighlight">\(E[\hat{f}(x^\ast)]\)</span> are constants, so we can drop the expectation operator.</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - f(x^\ast))^2] + [f(x^\ast) - E[\hat{f}(x^\ast)]]^2 + E\{[E[\hat{f}(x^\ast)] - \hat{f}(x^\ast)]^2\}\]</div>
+<p>Cool! We have finished the breakdown.</p>
+</section>
+<section id="naming-things">
+<h2>Naming things<a class="headerlink" href="#naming-things" title="Permalink to this headline">#</a></h2>
+<p>As a final step, let’s name the three terms in</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - f(x^\ast))^2] + [f(x^\ast) - E[\hat{f}(x^\ast)]]^2 + E\{[E[\hat{f}(x^\ast)] - \hat{f}(x^\ast)]^2\}\]</div>
+<p>The first term, <span class="math notranslate nohighlight">\(E[(y^\ast - f(x^\ast))^2]\)</span>, is the variance of <span class="math notranslate nohighlight">\(\epsilon\)</span>, which is <span class="math notranslate nohighlight">\(\sigma^2\)</span>. We call this “irreducible error” or “irreducible noise”.</p>
+<p>The second term, <span class="math notranslate nohighlight">\([f(x^\ast) - E[\hat{f}(x^\ast)]]^2\)</span>, is the “squared bias”, because the definition of the bias of an estimator is <span class="math notranslate nohighlight">\(\text{bias}(\hat{\theta}) = E(\hat{\theta}) - \theta\)</span>.</p>
+<p>The third term, <span class="math notranslate nohighlight">\(E\{[E[\hat{f}(x^\ast)] - \hat{f}(x^\ast)]^2\}\)</span>is, by definition, the variance of <span class="math notranslate nohighlight">\(\hat{f}(x^\ast)\)</span>.</p>
+<p>So to put everything together,</p>
+<div class="math notranslate nohighlight">
+\[E[(y^\ast - \hat{f}(x^\ast))^2] = \text{Var}(\epsilon) + \text{bias}^2(\hat{f}(x^\ast)) + \text{Var}(\hat{f}(x^\ast))\]</div>
+</section>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline">#</a></h2>
+<p>Bishop, Christopher M. (2006). <em>Pattern recognition and machine learning</em>. New York: Springer,</p>
+<p>Gareth James, Daniela Witten, Trevor Hastie, Robert Tibshirani. (2013). <em>An introduction to statistical learning: with applications in R</em>. New York :Springer,</p>
+<p>Hastie, T., Tibshirani, R., &amp; Friedman, J. H. (2009). <em>The elements of statistical learning: data mining, inference, and prediction</em>. 2nd ed. New York: Springer.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./_blog"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="../cv.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">Curriculum Vitae</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="2020-01-09-basic-linear-algebra.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Some Basic Linear Algebra</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Chen Tang<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

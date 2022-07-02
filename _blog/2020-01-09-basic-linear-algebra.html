@@ -1,0 +1,772 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>Some Basic Linear Algebra &#8212; Chen Tang</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="../_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=62ba249389abaaa9ffc34bf36a076bdc1d65ee18" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=f31d14ad54b65d19161ba51d4ffff3a77ae00456"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script kind="utterances">
+
+    var commentsRunWhenDOMLoaded = cb => {
+    if (document.readyState != 'loading') {
+        cb()
+    } else if (document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', cb)
+    } else {
+        document.attachEvent('onreadystatechange', function() {
+        if (document.readyState == 'complete') cb()
+        })
+    }
+}
+
+var addUtterances = () => {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src = "https://utteranc.es/client.js";
+    script.async = "async";
+
+    script.setAttribute("repo", "tangchen/tangc.net");
+    script.setAttribute("issue-term", "pathname");
+    script.setAttribute("theme", "github-light");
+    script.setAttribute("label", "💬 comment");
+    script.setAttribute("crossorigin", "anonymous");
+
+    sections = document.querySelectorAll("div.section");
+    if (sections !== null) {
+        section = sections[sections.length-1];
+        section.appendChild(script);
+    }
+}
+commentsRunWhenDOMLoaded(addUtterances);
+</script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Leakage" href="2021-05-31-tmag2021-data-leakage.html" />
+    <link rel="prev" title="A Very Detailed Bias-Variance Breakdown" href="2019-09-01-bias-variance-breakdown.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="None">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="../index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="../_static/logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">Chen Tang</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="../search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search this book..." aria-label="Search this book..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    Welcome!
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../cv.html">
+   Curriculum Vitae
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Blog Posts:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="2019-09-01-bias-variance-breakdown.html">
+   A Very Detailed Bias-Variance Breakdown
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   Some Basic Linear Algebra
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="2021-05-31-tmag2021-data-leakage.html">
+   Data Leakage
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Fun Projects:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="../_projects/python-with-keen/0-intro.html">
+   Learning Python with Keen
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="../_projects/python-with-keen/1-python-basics.html">
+     Session 1: Python Basics
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Notes:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="../_notes/bayesian/hierarchical-model.html">
+   Hierarchical model
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Powered by <a href="https://jupyterbook.org">Jupyter Book</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/tangchen/tangc.net"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/tangchen/tangc.net/issues/new?title=Issue%20on%20page%20%2F_blog/2020-01-09-basic-linear-algebra.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="../_sources/_blog/2020-01-09-basic-linear-algebra.md"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.md</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+<label for="__page-toc"
+  class="headerbtn headerbtn-page-toc"
+  
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-list"></i>
+  </span>
+
+</label>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+    <div class="tocsection onthispage pt-5 pb-3">
+        <i class="fas fa-list"></i> Contents
+    </div>
+    <nav id="bd-toc-nav" aria-label="Page">
+        <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#scalars-vectors-matrices-and-tensors">
+   Scalars, Vectors, Matrices and Tensors
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#transpose">
+   Transpose
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#multiplication">
+   Multiplication
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#matrix-product">
+     Matrix product
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#element-wise-product-aka-hadamard-product">
+     Element-wise product (aka Hadamard product)
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#dot-product">
+     Dot product
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#properties-of-matrix-multiplication">
+     Properties of matrix multiplication
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#identity-and-inverse-matrices">
+   Identity and Inverse Matrices
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#linear-dependence-and-span">
+   Linear Dependence and Span
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#norms">
+   Norms
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#special-kinds-of-matrices-and-vectors">
+   Special Kinds of Matrices and Vectors
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#diagonal-matrix">
+     Diagonal matrix
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#symmetric-matrix">
+     Symmetric matrix
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#unit-vector">
+     Unit vector
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#orthogonal-vectors-and-orthogonal-matrices">
+     Orthogonal vectors and orthogonal matrices
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+    </nav>
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>Some Basic Linear Algebra</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                        <div>
+                            <h2> Contents </h2>
+                        </div>
+                        <nav aria-label="Page">
+                            <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#scalars-vectors-matrices-and-tensors">
+   Scalars, Vectors, Matrices and Tensors
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#transpose">
+   Transpose
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#multiplication">
+   Multiplication
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#matrix-product">
+     Matrix product
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#element-wise-product-aka-hadamard-product">
+     Element-wise product (aka Hadamard product)
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#dot-product">
+     Dot product
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#properties-of-matrix-multiplication">
+     Properties of matrix multiplication
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#identity-and-inverse-matrices">
+   Identity and Inverse Matrices
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#linear-dependence-and-span">
+   Linear Dependence and Span
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#norms">
+   Norms
+  </a>
+ </li>
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#special-kinds-of-matrices-and-vectors">
+   Special Kinds of Matrices and Vectors
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#diagonal-matrix">
+     Diagonal matrix
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#symmetric-matrix">
+     Symmetric matrix
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#unit-vector">
+     Unit vector
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#orthogonal-vectors-and-orthogonal-matrices">
+     Orthogonal vectors and orthogonal matrices
+    </a>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+                        </nav>
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section class="tex2jax_ignore mathjax_ignore" id="some-basic-linear-algebra">
+<h1>Some Basic Linear Algebra<a class="headerlink" href="#some-basic-linear-algebra" title="Permalink to this headline">#</a></h1>
+<p>Purely out of curiosity, I’m recently reading <a class="reference external" href="http://www.deeplearningbook.org/">the deep learning book</a> (Goodfellow, Bengio, &amp; Courville, 2016). I noticed that Chapter 2 Linear Algebra is a very quick and effective summary of linear algebra. It provides the right amount of linear algebra for deep learning, as well as machine learning and statistics needed for my research. Below are excerpts from the deep learning book all credit goes to Dr. Ian Goodfellow and his colleagues.</p>
+<!--more-->
+<section id="scalars-vectors-matrices-and-tensors">
+<h2>Scalars, Vectors, Matrices and Tensors<a class="headerlink" href="#scalars-vectors-matrices-and-tensors" title="Permalink to this headline">#</a></h2>
+<ul class="simple">
+<li><p>scalar: just a single number</p></li>
+<li><p>vector: an array of numbers</p></li>
+<li><p>matrix: a 2-dimensional array of numbers</p></li>
+<li><p>tensor: an n-dimensional array of number</p></li>
+</ul>
+</section>
+<section id="transpose">
+<h2>Transpose<a class="headerlink" href="#transpose" title="Permalink to this headline">#</a></h2>
+<p>The <strong>transpose</strong> of a matrix is the mirror image of the matrix across the main diagonal:</p>
+<div class="math notranslate nohighlight">
+\[A_{i,j}^{\top} = A_{j,i}\]</div>
+<p>Transpose of a scalar is itself. Transpose of a column vector is a row vector and vice versa.</p>
+</section>
+<section id="multiplication">
+<h2>Multiplication<a class="headerlink" href="#multiplication" title="Permalink to this headline">#</a></h2>
+<section id="matrix-product">
+<h3>Matrix product<a class="headerlink" href="#matrix-product" title="Permalink to this headline">#</a></h3>
+<p>The matrix product of matrices <span class="math notranslate nohighlight">\(A\)</span> and <span class="math notranslate nohighlight">\(B\)</span> is a third matrix <span class="math notranslate nohighlight">\(C\)</span>. In order for this product to be defined, <span class="math notranslate nohighlight">\(A\)</span> must have the same number of columns as <span class="math notranslate nohighlight">\(B\)</span> has rows. If <span class="math notranslate nohighlight">\(A\)</span> is of shape <span class="math notranslate nohighlight">\(m \times n\)</span> and <span class="math notranslate nohighlight">\(B\)</span> is of shape <span class="math notranslate nohighlight">\(n \times p\)</span>, then <span class="math notranslate nohighlight">\(C\)</span> is of shape <span class="math notranslate nohighlight">\(m \times p\)</span>.</p>
+<div class="math notranslate nohighlight">
+\[C_{i, j} = \sum_k A_{i, k} B_{k, j}\]</div>
+</section>
+<section id="element-wise-product-aka-hadamard-product">
+<h3>Element-wise product (aka Hadamard product)<a class="headerlink" href="#element-wise-product-aka-hadamard-product" title="Permalink to this headline">#</a></h3>
+<div class="math notranslate nohighlight">
+\[A \odot B\]</div>
+</section>
+<section id="dot-product">
+<h3>Dot product<a class="headerlink" href="#dot-product" title="Permalink to this headline">#</a></h3>
+<p>The dot product between two vectors <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span> of the same length is the matrix product <span class="math notranslate nohighlight">\(x^\top y\)</span>. the matrix product <span class="math notranslate nohighlight">\(C\)</span> can be thought of as the dot products of each corresponding row in <span class="math notranslate nohighlight">\(A\)</span> and column in <span class="math notranslate nohighlight">\(B\)</span>.</p>
+</section>
+<section id="properties-of-matrix-multiplication">
+<h3>Properties of matrix multiplication<a class="headerlink" href="#properties-of-matrix-multiplication" title="Permalink to this headline">#</a></h3>
+<ul class="simple">
+<li><p>Distributive: <span class="math notranslate nohighlight">\(A(B + C)=AB + AC\)</span></p></li>
+<li><p>Associative: <span class="math notranslate nohighlight">\(A(BC) = (AB)C\)</span></p></li>
+<li><p>Not commutative: <span class="math notranslate nohighlight">\(AB = BA\)</span> is not always true</p></li>
+<li><p>But dot product between two vectors is commutative: <span class="math notranslate nohighlight">\(x^\top y = y^\top x\)</span></p></li>
+<li><p>Transpose of a matrix product: <span class="math notranslate nohighlight">\((AB)^\top = B^\top A^\top\)</span> (this can be used to prove <span class="math notranslate nohighlight">\(x^\top y = y^\top x\)</span>)</p></li>
+</ul>
+</section>
+</section>
+<section id="identity-and-inverse-matrices">
+<h2>Identity and Inverse Matrices<a class="headerlink" href="#identity-and-inverse-matrices" title="Permalink to this headline">#</a></h2>
+<p>Identity matrix: denoted as <span class="math notranslate nohighlight">\(I_n\)</span>, all its entries along the main diagonal are 1, all the others are zero.</p>
+<p>The inverse of <span class="math notranslate nohighlight">\(A\)</span>, denoted as <span class="math notranslate nohighlight">\(A^{-1}\)</span>, is defined as the matrix such that</p>
+<div class="math notranslate nohighlight">
+\[A^{-1}A = I_n\]</div>
+</section>
+<section id="linear-dependence-and-span">
+<h2>Linear Dependence and Span<a class="headerlink" href="#linear-dependence-and-span" title="Permalink to this headline">#</a></h2>
+<p>A <strong>linear combination</strong> of some set of vectors <span class="math notranslate nohighlight">\(\{v^{(1)}, ... , v^{(n)}\}\)</span> is given by multiplying
+each vector <span class="math notranslate nohighlight">\(v^{(i)}\)</span> by a corresponding scalar coefficient and adding the results:</p>
+<div class="math notranslate nohighlight">
+\[\sum_i c_iv^{(i)}\]</div>
+<p>The <strong>span</strong> of a set of vectors is the set of all points obtainable by linear combination of the original vectors.</p>
+<p>Determining whether <span class="math notranslate nohighlight">\(Ax = b\)</span> has a solution thus amounts to testing whether b is in the span of the columns of <span class="math notranslate nohighlight">\(A\)</span>. This particular span is known as the <strong>column space</strong> or the <strong>range</strong> of <span class="math notranslate nohighlight">\(A\)</span>.</p>
+</section>
+<section id="norms">
+<h2>Norms<a class="headerlink" href="#norms" title="Permalink to this headline">#</a></h2>
+<p>Norm is the measure of the size of a vector. The <span class="math notranslate nohighlight">\(L^p\)</span> norm is defined as:</p>
+<div class="math notranslate nohighlight">
+\[\|x\|_p = \Big(\sum_i |x_i|^p\Big)^{\frac{1}{p}}\]</div>
+<p>The <strong>Euclidean norm</strong>, or <span class="math notranslate nohighlight">\(L^2\)</span> norm, is used very frequently. It is also common to use the squared <span class="math notranslate nohighlight">\(L^2\)</span> norm, which is simply <span class="math notranslate nohighlight">\(x^{\top} x\)</span>.</p>
+<p>However squared <span class="math notranslate nohighlight">\(L^2\)</span> norm is undesirable because it changes very slowly near the origin. So when it is important to discriminate between values that are exactly zero and values that are very small but nonzero, we could use <span class="math notranslate nohighlight">\(L^1\)</span> norm:</p>
+<div class="math notranslate nohighlight">
+\[\|x\|_1 = \sum_i|x_i|\]</div>
+<p><strong>Max norm</strong> is also common, which is defined by the absolute value of the element with the largest magnitude in the vector:</p>
+<div class="math notranslate nohighlight">
+\[\|x\|_{\infty} = \max_i|x_i|\]</div>
+<p>Above norms describe the size of vectors. <strong>Frobenius norm</strong> can measure the size of a matrix:</p>
+<div class="math notranslate nohighlight">
+\[\|A\|_F = \sqrt{\sum_{i, j} A^2_{i,j}}\]</div>
+<p>This is analogous to the <span class="math notranslate nohighlight">\(L^2\)</span> norm of a vector.</p>
+<p>The dot product of two vectors can be written in terms of norms:</p>
+<div class="math notranslate nohighlight">
+\[x^{\top}y = \|x\|_2\|y\|_2\cos{\theta}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\theta\)</span> is the angle between <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>.</p>
+</section>
+<section id="special-kinds-of-matrices-and-vectors">
+<h2>Special Kinds of Matrices and Vectors<a class="headerlink" href="#special-kinds-of-matrices-and-vectors" title="Permalink to this headline">#</a></h2>
+<section id="diagonal-matrix">
+<h3>Diagonal matrix<a class="headerlink" href="#diagonal-matrix" title="Permalink to this headline">#</a></h3>
+<p>a matrix <span class="math notranslate nohighlight">\(D\)</span> is diagonal if and only if <span class="math notranslate nohighlight">\(D_{i, j} = 0\)</span> for all <span class="math notranslate nohighlight">\(i \ne j\)</span>. We write <span class="math notranslate nohighlight">\(\text{diag}(v)\)</span> to denote a square diagonal matrix whose diagonal entries are given by the entries of the vector <span class="math notranslate nohighlight">\(v\)</span>.</p>
+<p>Diagonal matrices are interesting because:</p>
+<ol class="simple">
+<li><p>Multiplying by a diagonal matrix is very computationally efficient: <span class="math notranslate nohighlight">\(\text{diag}(v) x = v \odot x\)</span></p></li>
+<li><p>Inverting a diagonal matrix is easy: <span class="math notranslate nohighlight">\(\text{diag}(v)^{-1} = \text{diag}(1/v_1, ..., 1/v_n)^{\top}\)</span></p></li>
+</ol>
+<p>Diagonal matrices do not need to be square. For a non-square diagonal matrix <span class="math notranslate nohighlight">\(D\)</span>, the product <span class="math notranslate nohighlight">\(Dx\)</span> will involve scaling each element of <span class="math notranslate nohighlight">\(x\)</span>, and either concatenating some zeros to the result if <span class="math notranslate nohighlight">\(D\)</span> is taller than it is wide, or discarding some of the last elements of the vector if <span class="math notranslate nohighlight">\(D\)</span> is wider than it is tall.</p>
+</section>
+<section id="symmetric-matrix">
+<h3>Symmetric matrix<a class="headerlink" href="#symmetric-matrix" title="Permalink to this headline">#</a></h3>
+<p>A symmetric matrix is any matrix that is equal to its own transpose:</p>
+<div class="math notranslate nohighlight">
+\[A = A^{\top}\]</div>
+</section>
+<section id="unit-vector">
+<h3>Unit vector<a class="headerlink" href="#unit-vector" title="Permalink to this headline">#</a></h3>
+<p>A unit vector is a vector with unit norm:</p>
+<div class="math notranslate nohighlight">
+\[\|x\|_2 = 1\]</div>
+</section>
+<section id="orthogonal-vectors-and-orthogonal-matrices">
+<h3>Orthogonal vectors and orthogonal matrices<a class="headerlink" href="#orthogonal-vectors-and-orthogonal-matrices" title="Permalink to this headline">#</a></h3>
+<p>Vector <span class="math notranslate nohighlight">\(x\)</span> and vector <span class="math notranslate nohighlight">\(y\)</span> are orthogonal to each other if <span class="math notranslate nohighlight">\(x^{\top}y = 0\)</span>. If the vectors are not only orthogonal but also have unit norm, we call them <strong>orthonormal</strong>.</p>
+<p>An orthogonal matrix is a square matrix whose rows are mutually orthonormal and whose columns are mutually orthonormal:</p>
+<div class="math notranslate nohighlight">
+\[A^{\top}A = AA^{\top} = I\]</div>
+<p>Orthogonal matrices are of interest because their inverse is very cheap to compute:</p>
+<div class="math notranslate nohighlight">
+\[A^{-1} = A^{\top}\]</div>
+<p>Counterintuitively, rows and columns of an orthogonal matrix are not merely orthogonal but fully orthonormal. There is no special term for a matrix whose rows or columns are orthogonal but not orthonormal.</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Orthogonal_matrix">Definition from Wikipedia</a>: “An orthogonal matrix is a square matrix whose columns and rows are orthogonal unit vectors (i.e., orthonormal vectors).”</p>
+<p><em>(To be continued…)</em></p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            kernelName: "python3",
+            path: "./_blog"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="2019-09-01-bias-variance-breakdown.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">A Very Detailed Bias-Variance Breakdown</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="2021-05-31-tmag2021-data-leakage.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Data Leakage</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Chen Tang<br/>
+  
+      &copy; Copyright 2022.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

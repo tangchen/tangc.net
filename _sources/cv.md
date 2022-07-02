@@ -79,7 +79,7 @@ for blind reviewing]. *Personnel Psychology.*
 
 **Tang, C.**, Song, Q. C., & Hickman, L. (writing in progress). Detecting and avoiding common data leakage issues when using machine learning in organizational research.
 
-Culpepper, S. A. & Tang, C. (model implementation). Rank likelihood for non-normal data in Bayesian multilevel models.
+Culpepper, S. A. & **Tang, C.** (model implementation). Rank likelihood for non-normal data in Bayesian multilevel models.
 
 **Tang, C.**, Chen, Y., Song, Q. C., & Newman, D. A. (writing in progress). Valuing diversity in hiring when choosing a predictor weighting method: An extension of Sackett et al. (2017).
 

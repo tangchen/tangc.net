@@ -1,0 +1,23 @@
+# Table of contents
+# Learn more at https://jupyterbook.org/customize/toc.html
+
+format: jb-book
+root: intro
+parts:
+  - caption:
+    chapters:
+    - file: cv
+  - caption: "Blog Posts:"
+    chapters:
+    - file: _blog/2019-09-01-bias-variance-breakdown
+    - file: _blog/2020-01-09-basic-linear-algebra
+    - file: _blog/2021-05-31-tmag2021-data-leakage
+  - caption: "Fun Projects:"
+    chapters:
+    - file: _projects/python-with-keen/0-intro
+      sections:
+      - file: _projects/python-with-keen/1-python-basics
+  - caption: "Notes:"
+    chapters:
+    - file: _notes/bayesian/hierarchical-model
+    

@@ -1,4 +1,4 @@
-## Curriculum Vitae
+# Curriculum Vitae
 
 <p style="text-align:center" ><font size="+3"><b>CHEN TANG</b></font></font></p>
 
@@ -10,7 +10,7 @@
 
 <p style="text-align:center"> <a href="mailto:tangc@tangc.net">tangc@tangc.net</a></p>
 
-### **Education**
+## **Education**
 
 **School of Labor and Employment Relations, University of Illinois at Urbana-Champaign**
 
@@ -21,13 +21,13 @@
 - M.Ed. in Applied Psychology, *June 2012*
 - B.S. in Psychology, *June 2009*
 
-### **Academic Experience**
+## **Academic Experience**
 
 Research Assistant, School of Labor and Employment Relations, University of Illinois at Urbana-Champaign, 2017-Present
 
 Research Assistant, School of Entrepreneurship and Management, ShanghaiTech University, 2015-2017
 
-### **Teaching Experience**
+## **Teaching Experience**
 
 Instructor, PSYC 245 (Introduction to Industrial-Organizational Psychology), Department of Psychology, UIUC, Spring 2022 (Evaluation: 4.42/5.00)
 
@@ -37,12 +37,13 @@ Teaching Assistant, Negotiation, School of Entrepreneurship and Management, Shan
 
 Teaching Assistant, Executive MBA Midterm Module, China Europe International Business School, Spring 2017
 
-### **Honors and Awards**
+## **Honors and Awards**
+
 - International Personnel Assessment Council James C. Johnson Student Paper Award (June 2022)
 - Tim Judge Fellowship, School of Labor and Employment Relations, UIUC (May 2022)
 - University of Illinois List of [Teachers Ranked as Excellent (Fall 2020)](https://citl.illinois.edu/citl-101/measurement-evaluation/teaching-evaluation/teaching-evaluations-(ices)/teachers-ranked-as-excellent)
 
-### **Referred Journal Publications**
+## **Referred Journal Publications**
 
 Song, Q. C., Shin, H. J., **Tang, C.**, Hanna, A., & Behrend, T. S. (2022). Investigating machine learning's capacity to enhance the prediction of career choices. *Personnel Psychology*, 1-25. https://doi.org/10.1111/peps.12529
 
@@ -52,7 +53,7 @@ Song, Q. C., **Tang, C.**, & Wee, S. (2021). Making sense of model generalizabil
 
 Yang, Y., **Tang, C.**, Qu, X., Wang, C., & Denson, T. F. (2018). Group facial width-to-height ratio predicts intergroup negotiation outcomes. *Frontiers in Psychology, 9*. https://doi.org/10.3389/fpsyg.2018.00214
 
-### **Manuscripts Invited for Revise and Resubmit**
+## **Manuscripts Invited for Revise and Resubmit**
 
 **Tang, C.**, Hickman, L., Song, Q. C., & Alexander III, L. (**1st R&R**). [Details omitted
 for blind reviewing]. *Journal of Applied Psychology.*
@@ -69,7 +70,7 @@ for blind reviewing]. *Journal of Business Ethics.*
 Song, Q. C., **Tang, C.**, Alexander III, L., Hickman, L., & Kim, Y. (**2nd R&R**). [Details omitted
 for blind reviewing]. *Personnel Psychology.*
 
-### **Manuscripts in Preparation**
+## **Manuscripts in Preparation**
 
 **Tang, C.**, Newman, D. A., Song, Q. C., & Wee, S. (to be submitted). Shrinkage of diversity tradeoff curves in personnel selection: A comparison of local validity studies, meta-analysis, Bayes-analysis, and ensemble machine learning.
 
@@ -79,7 +80,7 @@ for blind reviewing]. *Personnel Psychology.*
 
 **Tang, C.**, Song, Q. C., & Hickman, L. (writing in progress). Detecting and avoiding common data leakage issues when using machine learning in organizational research.
 
-Culpepper, S. A. & **Tang, C.** (model implementation). Rank likelihood for non-normal data in Bayesian multilevel models.
+Culpepper, S. A., **Tang, C.**, & Newman, D. A. (model implementation). Rank likelihood for non-normal data in Bayesian multilevel models.
 
 **Tang, C.**, Chen, Y., Song, Q. C., & Newman, D. A. (writing in progress). Valuing diversity in hiring when choosing a predictor weighting method: An extension of Sackett et al. (2017).
 
@@ -87,13 +88,13 @@ Culpepper, S. A. & **Tang, C.** (model implementation). Rank likelihood for non-
 
 Lee, SH., & **Tang, C**. (data collection). Won’t stop searching: Detachment, self-improvement, and job search outcomes.
 
-### **Book Chapters/Sections**
+## **Book Chapters/Sections**
 
 Song, Q. C., Liu, M. Q., **Tang, C.**, & Long, L. (2020). Applying principles of big data to the workplace and talent analytics. *Big Data Methods for Psychological Research: New Horizons and Challenges*. Washington D. C., APA books.
 
 **Tang, C.**, & Yang, Y. (2017). Goals. In Zeigler-Hill, V., & Shackelford, T. K. (Eds.) *Encyclopedia of Personality and Individual Difference*. Springer.
 
-### **Conference Presentations**
+## **Conference Presentations**
 
 Tang, C., Newman, D. A., Song, Q. C. & Wee, S. (July 2022). *Shrinkage of diversity tradeoff curves in personnel selection: A comparison of local validity studies, meta-analysis, Bayes-analysis, and ensemble machine learning* [Invited presentation; Winner of the James C. Johnson Student Paper Award]. The 2022 Annual Conference of the International Personnel Assessment Council, San Diego, CA.
 

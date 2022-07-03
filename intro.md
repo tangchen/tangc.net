@@ -22,6 +22,6 @@ My research interests mainly cover:
 
 For more information about me, please see my CV [here](https://tangc.net/cv.html).
 
-## Please note...
+**Please note...**
 
 This website is actually my personal notebook. It contains stuff that I'm working on, or some pieces of information that I find interesting or important. They are very unstructured and probably contain a lot of errors/typos/thoughtos. ;o)

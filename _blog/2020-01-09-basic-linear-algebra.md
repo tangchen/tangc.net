@@ -1,11 +1,11 @@
----
+<!-- ---
 title: "Some Basic Linear Algebra"
 date: 2020-01-09
 categories: ["Math and Stats"]
 tags: ["linear algebra"]
 math: true
 draft: false
----
+--- -->
 
 # Some Basic Linear Algebra
 

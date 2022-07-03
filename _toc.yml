@@ -12,6 +12,7 @@ parts:
     - file: _blog/2019-09-01-bias-variance-breakdown
     - file: _blog/2020-01-09-basic-linear-algebra
     - file: _blog/2021-05-31-tmag2021-data-leakage
+    - file: _blog/2022-07-02-correlation-vs-causation
   - caption: "Fun Projects:"
     chapters:
     - file: _projects/python-with-keen/0-intro

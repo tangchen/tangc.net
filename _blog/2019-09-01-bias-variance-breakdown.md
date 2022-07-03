@@ -1,11 +1,11 @@
----
+<!-- ---
 title: "A Very Detailed Bias-Variance Breakdown"
 date: 2019-09-01
 categories: ["Math and Stats"]
 tags: ["Machine learning", "Bias-variance trade-off", "Prediction"]
 draft: false
 math: true
----
+--- -->
 
 # A Very Detailed Bias-Variance Breakdown
 

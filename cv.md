@@ -83,7 +83,7 @@ Culpepper, S. A. & **Tang, C.** (model implementation). Rank likelihood for non-
 
 **Tang, C.**, Chen, Y., Song, Q. C., & Newman, D. A. (writing in progress). Valuing diversity in hiring when choosing a predictor weighting method: An extension of Sackett et al. (2017).
 
-<sup>\*</sup>Lee, S. H., <sup>\*</sup>**Tang, C.**, Wei, W., & Chen, Y. (under review). [Details omitted for blind reviewing]. *Human Relations.* *(\* Equal contribution)*
+<sup>\*</sup>Lee, S. H., <sup>\*</sup>**Tang, C.**, Wei, W., & Chen, Y. (writing in progress). [Details omitted for blind reviewing]. *(\* Equal contribution)*
 
 Lee, SH., & **Tang, C**. (data collection). Won’t stop searching: Detachment, self-improvement, and job search outcomes.
 

@@ -1,7 +1,3 @@
-# jb build .
-# ghp-import -n -p -f -c tangc.net  _build/html
-
-
 # Book settings
 # Learn more at https://jupyterbook.org/customize/config.html
 
